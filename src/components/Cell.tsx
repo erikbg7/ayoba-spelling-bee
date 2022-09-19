@@ -4,20 +4,32 @@ import clsx from 'clsx';
 type Props = {
   center?: boolean;
   letter: string;
+  onClick: (letter: string) => void;
 };
 
-const Cell: React.FC<Props> = ({ center = false, letter }) => {
+const Cell: React.FC<Props> = ({ center = false, letter, onClick }) => {
+  const [animate, setAnimate] = React.useState<boolean>(false);
+
+  const handleCellClick = () => {
+    onClick(letter);
+    setAnimate(true);
+    setTimeout(() => setAnimate(false), 300);
+  };
+
   return (
-    <div className="h-fit w-20">
-      <svg className="hive-cell outer" viewBox="0 0 120 103.92304845413263">
+    <div className="h-fit w-20" onClick={handleCellClick}>
+      <svg
+        className={clsx('hive-cell outer cursor-pointer', animate && 'cell-pulse')}
+        viewBox="0 0 120 103.92304845413263"
+      >
         <polygon
-          className={clsx('cell-fill fill-yellow-500', center && 'fill-black')}
+          className={clsx(center ? 'fill-black' : 'fill-yellow-400')}
           points="0,51.96152422706631 30,0 90,0 120,51.96152422706631 90,103.92304845413263 30,103.92304845413263"
           stroke="white"
           strokeWidth="7.5"
         ></polygon>
         <text
-          className={clsx('anchor-middle text-lg uppercase font-bold', center && 'fill-white')}
+          className={clsx('anchor-middle text-2xl uppercase font-bold', center && 'fill-white')}
           x="50%"
           y="50%"
           dy="0.35em"
