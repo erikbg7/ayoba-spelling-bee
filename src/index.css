@@ -20,8 +20,30 @@
 }
 
 .cell-pulse {
-  -webkit-animation: 1000ms pulse step-end infinite;
+  -webkit-animation: 300ms pulse step-end infinite;
   animation: 300ms sizePulse;
+}
+
+.show-100 {
+  animation: 100ms fadeIn ease-in;
+}
+.show-150 {
+  animation: 150ms fadeIn ease-in;
+}
+.show-200 {
+  animation: 200ms fadeIn ease-in;
+}
+.show-250 {
+  animation: 250ms fadeIn ease-in;
+}
+.show-300 {
+  animation: 300ms fadeIn ease-in;
+}
+.show-350 {
+  animation: 400ms fadeIn ease-in;
+}
+.show-400 {
+  animation: 450ms fadeIn ease-in;
 }
 
 @keyframes sizePulse {
@@ -33,5 +55,14 @@
 @keyframes blink {
   50% {
     opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

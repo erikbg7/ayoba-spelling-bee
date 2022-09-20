@@ -17,17 +17,17 @@ const HoneyComb: React.FC<Props> = ({ letters, center, onCellClick }) => {
   return (
     <div className="flex items-center justify-center">
       <div className="flex flex-col">
-        <Cell letter={lettersList[0]} onClick={onCellClick} />
-        <Cell letter={lettersList[1]} onClick={onCellClick} />
+        <Cell className="show-200" letter={lettersList[0]} onClick={onCellClick} />
+        <Cell className="show-150" letter={lettersList[1]} onClick={onCellClick} />
       </div>
       <div className="flex flex-col -mx-4">
-        <Cell letter={lettersList[2]} onClick={onCellClick} />
-        <Cell center letter={center} onClick={onCellClick} />
-        <Cell letter={lettersList[3]} onClick={onCellClick} />
+        <Cell className="show-250" letter={lettersList[2]} onClick={onCellClick} />
+        <Cell className="show-100" center letter={center} onClick={onCellClick} />
+        <Cell className="show-400" letter={lettersList[3]} onClick={onCellClick} />
       </div>
       <div className="flex flex-col">
-        <Cell letter={lettersList[4]} onClick={onCellClick} />
-        <Cell letter={lettersList[5]} onClick={onCellClick} />
+        <Cell className="show-300" letter={lettersList[4]} onClick={onCellClick} />
+        <Cell className="show-350" letter={lettersList[5]} onClick={onCellClick} />
       </div>
     </div>
   );

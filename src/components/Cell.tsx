@@ -5,9 +5,10 @@ type Props = {
   center?: boolean;
   letter: string;
   onClick: (letter: string) => void;
+  className?: string;
 };
 
-const Cell: React.FC<Props> = ({ center = false, letter, onClick }) => {
+const Cell: React.FC<Props> = ({ center = false, letter, onClick, className }) => {
   const [animate, setAnimate] = React.useState<boolean>(false);
 
   const handleCellClick = () => {
@@ -17,7 +18,7 @@ const Cell: React.FC<Props> = ({ center = false, letter, onClick }) => {
   };
 
   return (
-    <div className="h-fit w-20" onClick={handleCellClick}>
+    <div className={clsx('h-fit w-20 transition-opacity', className)} onClick={handleCellClick}>
       <svg
         className={clsx('hive-cell outer cursor-pointer', animate && 'cell-pulse')}
         viewBox="0 0 120 103.92304845413263"

@@ -3,10 +3,22 @@ import { HoneyComb } from './components/HoneyComb';
 import { getDailyChallenge, getRandomChallenge } from './api';
 import { WordInput } from './components/WordInput';
 
+type Challenge = {
+  letters: string;
+  center: string;
+  wordlist: string[];
+};
+
+const INITIAL_CHALLENGE_STATE = {
+  letters: '',
+  center: '',
+  wordlist: [],
+};
+
 function App() {
   const [word, setWord] = React.useState('');
-  const [wordlist, setWordlist] = React.useState<string[]>([]);
-  const [challenge, setChallenge] = React.useState({ letters: '', center: '' });
+  const [validWords, setValidWords] = React.useState<string[]>([]);
+  const [challenge, setChallenge] = React.useState<Challenge>(INITIAL_CHALLENGE_STATE);
 
   const isLoading = !challenge.letters || !challenge.center;
 
@@ -14,8 +26,7 @@ function App() {
     (async function () {
       const challenge = await getDailyChallenge();
       console.log({ challenge });
-      setChallenge({ letters: challenge.letters, center: challenge.center });
-      setWordlist(challenge.wordlist);
+      setChallenge(challenge);
     })();
   }, []);
 
@@ -25,9 +36,13 @@ function App() {
     if (word.length <= 3) {
       alert('The word is to short!');
     } else {
-      if (wordlist.includes(word)) {
+      if (validWords.includes(word)) {
+        alert('You already found this word!');
+        return;
+      }
+      if (challenge.wordlist.includes(word)) {
         alert('Nice! You have found a word!');
-        setWordlist(wordlist.filter((w) => w !== word));
+        setValidWords((words) => [...words, word]);
         setWord('');
       } else {
         alert('Sorry, this word does not exist!');
