@@ -14,7 +14,7 @@
   top: 0;
   width: 2px;
   height: 1.25em;
-  background: #f7da21;
+  @apply bg-amber-500;
   -webkit-animation: 1000ms blink step-end infinite;
   animation: 1000ms blink step-end infinite;
 }
