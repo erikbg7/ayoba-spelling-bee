@@ -15,6 +15,31 @@ const INITIAL_CHALLENGE_STATE = {
   wordlist: [],
 };
 
+const addPointsReward = (reward: number) => {
+  const pointsSection = document.getElementById('points-reward');
+  const userPoints = document.getElementById('user-points');
+  if (pointsSection) {
+    const rewardSection = document.createElement('span');
+    rewardSection.classList.add('fade-in-1');
+    rewardSection.innerText = `+${reward}`;
+    pointsSection.replaceChildren(rewardSection);
+  }
+  if (userPoints) {
+    const currentPoints = parseInt(userPoints.innerText);
+    userPoints.innerText = (currentPoints + reward).toString();
+  }
+};
+
+const addErrorToast = (error: string) => {
+  const errorToast = document.getElementById('error-toast');
+  if (errorToast) {
+    const toast = document.createElement('span');
+    toast.classList.add('fade-in-2', 'toast');
+    toast.innerText = error;
+    errorToast.replaceChildren(toast);
+  }
+};
+
 function App() {
   const [word, setWord] = React.useState('');
   const [validWords, setValidWords] = React.useState<string[]>([]);
