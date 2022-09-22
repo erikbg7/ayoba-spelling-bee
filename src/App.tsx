@@ -2,6 +2,7 @@ import React from 'react';
 import { HoneyComb } from './components/HoneyComb';
 import { getDailyChallenge, getRandomChallenge } from './api';
 import { WordInput } from './components/WordInput';
+import { WordsList } from './components/WordsList';
 
 type Challenge = {
   letters: string;
@@ -59,31 +60,34 @@ function App() {
   const handleDeleteLetter = () => setWord((w) => w.slice(0, -1));
   const handleWordSubmit = () => {
     if (word.length <= 3) {
-      alert('The word is to short!');
-    } else {
-      if (validWords.includes(word)) {
-        alert('You already found this word!');
-        return;
-      }
-      if (challenge.wordlist.includes(word)) {
-        alert('Nice! You have found a word!');
-        setValidWords((words) => [...words, word]);
-        setWord('');
-      } else {
-        alert('Sorry, this word does not exist!');
-      }
+      return addErrorToast('The word is to short!');
     }
+    if (validWords.includes(word)) {
+      return addErrorToast('You already found this word!');
+    }
+    if (!challenge.wordlist.includes(word)) {
+      return addErrorToast('This word does not exist!');
+    }
+    addPointsReward(word.length);
+    setTimeout(() => {
+      setValidWords((words) => [...words, word]);
+      setWord('');
+    }, 200);
   };
 
   return (
     <div className="flex flex-col items-center">
       {/*<div className="caret-amber-500 dummy-caret">d</div>*/}
+      <WordsList words={validWords} centerLetter={challenge.center} />
       <WordInput word={word} letters={challenge.letters} center={challenge.center} />
       <HoneyComb
         letters={challenge.letters}
         center={challenge.center}
         onCellClick={handleCellClick}
       />
+      <div>
+        <span id="user-points">0</span> / 50 points
+      </div>
       <div className="inline-flex my-6">
         <button
           onClick={handleDeleteLetter}

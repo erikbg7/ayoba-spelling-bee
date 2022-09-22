@@ -20,7 +20,7 @@ const HoneyComb: React.FC<Props> = ({ letters, center, onCellClick }) => {
         <Cell className="show-200" letter={lettersList[0]} onClick={onCellClick} />
         <Cell className="show-150" letter={lettersList[1]} onClick={onCellClick} />
       </div>
-      <div className="flex flex-col -mx-4">
+      <div className="flex flex-col -mx-6">
         <Cell className="show-250" letter={lettersList[2]} onClick={onCellClick} />
         <Cell className="show-100" center letter={center} onClick={onCellClick} />
         <Cell className="show-400" letter={lettersList[3]} onClick={onCellClick} />

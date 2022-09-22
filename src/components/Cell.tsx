@@ -18,7 +18,7 @@ const Cell: React.FC<Props> = ({ center = false, letter, onClick, className }) =
   };
 
   return (
-    <div className={clsx('h-fit w-20 transition-opacity', className)} onClick={handleCellClick}>
+    <div className={clsx('h-fit w-24 transition-opacity', className)} onClick={handleCellClick}>
       <svg
         className={clsx('hive-cell outer cursor-pointer', animate && 'cell-pulse')}
         viewBox="0 0 120 103.92304845413263"
