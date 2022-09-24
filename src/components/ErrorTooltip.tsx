@@ -24,4 +24,4 @@ const ErrorTooltip = () => {
   );
 };
 
-export { ErrorTooltip };
+export { ErrorTooltip, errorMessageAtom };

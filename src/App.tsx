@@ -40,13 +40,13 @@ function App() {
     const word = wordInputRef.current?.getWord() || '';
 
     if (word.length <= 3) {
-      return addErrorToast('The word is to short!');
+      return setErrorMessage('The word is to short!');
     }
     if (validWords.includes(word)) {
-      return addErrorToast('You already found this word!');
+      return setErrorMessage('You already found this word!');
     }
     if (!challenge.wordlist.includes(word)) {
-      return addErrorToast('This word does not exist!');
+      return setErrorMessage('This word does not exist!');
     }
 
     setReward(word.length);
