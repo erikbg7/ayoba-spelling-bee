@@ -1,8 +1,11 @@
 import React from 'react';
 import { HoneyComb } from './components/HoneyComb';
 import { getDailyChallenge, getRandomChallenge } from './api';
-import { WordInput } from './components/WordInput';
+import { WordInput, WordInputRefHandler } from './components/WordInput';
 import { WordsList } from './components/WordsList';
+import { useAtom } from 'jotai';
+import { rewardAtom } from './components/RewardOverlay';
+import { errorMessageAtom } from './components/ErrorTooltip';
 
 type Challenge = {
   letters: string;
@@ -16,37 +19,14 @@ const INITIAL_CHALLENGE_STATE = {
   wordlist: [],
 };
 
-const addPointsReward = (reward: number) => {
-  const pointsSection = document.getElementById('points-reward');
-  const userPoints = document.getElementById('user-points');
-  if (pointsSection) {
-    const rewardSection = document.createElement('span');
-    rewardSection.classList.add('fade-in-1');
-    rewardSection.innerText = `+${reward}`;
-    pointsSection.replaceChildren(rewardSection);
-  }
-  if (userPoints) {
-    const currentPoints = parseInt(userPoints.innerText);
-    userPoints.innerText = (currentPoints + reward).toString();
-  }
-};
-
-const addErrorToast = (error: string) => {
-  const errorToast = document.getElementById('error-toast');
-  if (errorToast) {
-    const toast = document.createElement('span');
-    toast.classList.add('fade-in-2', 'toast');
-    toast.innerText = error;
-    errorToast.replaceChildren(toast);
-  }
-};
-
 function App() {
-  const [word, setWord] = React.useState('');
+  const wordInputRef = React.useRef<WordInputRefHandler>(null);
+
+  const [reward, setReward] = useAtom(rewardAtom);
+  const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
+
   const [validWords, setValidWords] = React.useState<string[]>([]);
   const [challenge, setChallenge] = React.useState<Challenge>(INITIAL_CHALLENGE_STATE);
-
-  const isLoading = !challenge.letters || !challenge.center;
 
   React.useEffect(() => {
     (async function () {
@@ -56,9 +36,9 @@ function App() {
     })();
   }, []);
 
-  const handleCellClick = (letter: string) => setWord((w) => w + letter);
-  const handleDeleteLetter = () => setWord((w) => w.slice(0, -1));
   const handleWordSubmit = () => {
+    const word = wordInputRef.current?.getWord() || '';
+
     if (word.length <= 3) {
       return addErrorToast('The word is to short!');
     }
@@ -68,29 +48,30 @@ function App() {
     if (!challenge.wordlist.includes(word)) {
       return addErrorToast('This word does not exist!');
     }
-    addPointsReward(word.length);
+
+    setReward(word.length);
+
     setTimeout(() => {
       setValidWords((words) => [...words, word]);
-      setWord('');
+      wordInputRef.current?.clearWord();
     }, 200);
   };
 
   return (
     <div className="flex flex-col items-center">
-      {/*<div className="caret-amber-500 dummy-caret">d</div>*/}
       <WordsList words={validWords} centerLetter={challenge.center} />
-      <WordInput word={word} letters={challenge.letters} center={challenge.center} />
+      <WordInput ref={wordInputRef} letters={challenge.letters} center={challenge.center} />
       <HoneyComb
         letters={challenge.letters}
         center={challenge.center}
-        onCellClick={handleCellClick}
+        onCellClick={wordInputRef.current?.addLetter!}
       />
       <div>
-        <span id="user-points">0</span> / 50 points
+        <span id="user-points">{reward}</span> / 50 points
       </div>
       <div className="inline-flex my-6">
         <button
-          onClick={handleDeleteLetter}
+          onClick={wordInputRef.current?.deleteLetter!}
           className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-l"
         >
           Delete

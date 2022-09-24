@@ -1,32 +1,43 @@
 import React from 'react';
+import { ErrorTooltip } from './ErrorTooltip';
+import { RewardOverlay } from './RewardOverlay';
 
 type Props = {
-  word: string;
   letters: string;
   center: string;
 };
 
-const WordInput: React.FC<Props> = ({ letters, center, word }) => {
-  const wordLetters = word.split('');
+type WordInputRefHandler = {
+  addLetter: (letter: string) => void;
+  deleteLetter: () => void;
+  getWord: () => string;
+  clearWord: () => void;
+};
+
+const WordInput = React.forwardRef<WordInputRefHandler, Props>(({ letters, center }, ref) => {
+  const [word, setWord] = React.useState('');
   const isCenterLetter = (letter: string) => letter === center;
+
+  React.useImperativeHandle(ref, () => ({
+    addLetter: (letter: string) => setWord((w) => w + letter),
+    deleteLetter: () => setWord((w) => w.slice(0, -1)),
+    clearWord: () => setWord(''),
+    getWord: () => word,
+  }));
 
   return (
     <div className="relative text-center my-4 h-8 w-full">
-      <div
-        id="points-reward"
-        className="absolute right-0 left-0 text-amber-300 text-4xl font-bold"
-      />
+      <RewardOverlay />
       <div className="relative uppercase text-2xl font-semibold">
-        {wordLetters.map((l) => (
+        {word.split('').map((l) => (
           <span className={isCenterLetter(l) ? 'text-amber-500' : 'text-black'}>{l}</span>
         ))}
         <span className="absolute bg-amber-500 dummy-caret"></span>
       </div>
-      <div className="absolute right-0 left-0">
-        <div id="error-toast" />
-      </div>
+      <ErrorTooltip />
     </div>
   );
-};
+});
 
 export { WordInput };
+export type { WordInputRefHandler };
