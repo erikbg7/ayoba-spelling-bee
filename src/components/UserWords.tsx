@@ -1,9 +1,12 @@
 import React from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useAtomValue } from 'jotai';
+import { userWordsAtom } from '../atoms/user';
 
-type Props = { words: string[]; centerLetter: string };
+type Props = { centerLetter: string };
 
-const WordsList: React.FC<Props> = ({ words, centerLetter }) => {
+const UserWords: React.FC<Props> = ({ centerLetter }) => {
+  const userWords = useAtomValue(userWordsAtom);
   const [animationParent] = useAutoAnimate<HTMLUListElement>();
   const isCenterLetter = (letter: string) => letter === centerLetter;
 
@@ -12,13 +15,13 @@ const WordsList: React.FC<Props> = ({ words, centerLetter }) => {
       ref={animationParent}
       className="flex flex-wrap justify-center items-center w-full my-4 h-24"
     >
-      {!words.length && (
+      {!userWords.length && (
         <div className="text-center text-lg text-gray-400">
           <div>Use the honeycomb</div>
           <div>to write a word</div>
         </div>
       )}
-      {words.map((w) => (
+      {userWords.map((w) => (
         <div className="px-4 py-1 m-1 bg-gray-800 rounded-md">
           {w.split('').map((l) => (
             <span className={isCenterLetter(l) ? 'text-amber-500' : 'text-white'}>{l}</span>
@@ -29,4 +32,4 @@ const WordsList: React.FC<Props> = ({ words, centerLetter }) => {
   );
 };
 
-export { WordsList };
+export { UserWords };

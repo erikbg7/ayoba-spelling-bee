@@ -2,10 +2,13 @@ import React from 'react';
 import { HoneyComb } from './components/HoneyComb';
 import { getDailyChallenge, getRandomChallenge } from './api';
 import { WordInput, WordInputRefHandler } from './components/WordInput';
-import { WordsList } from './components/WordsList';
+import { UserWords } from './components/UserWords';
 import { useAtom } from 'jotai';
 import { rewardAtom } from './components/RewardOverlay';
 import { errorMessageAtom } from './components/ErrorTooltip';
+import { UserPoints } from './components/UserPoints';
+import { useUpdateAtom } from 'jotai/utils';
+import { userWordsAtom } from './atoms/user';
 
 type Challenge = {
   letters: string;
@@ -22,8 +25,7 @@ const INITIAL_CHALLENGE_STATE = {
 function App() {
   const wordInputRef = React.useRef<WordInputRefHandler>(null);
 
-  const [reward, setReward] = useAtom(rewardAtom);
-  const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
+  const setUserWords = useUpdateAtom(userWordsAtom);
 
   const [validWords, setValidWords] = React.useState<string[]>([]);
   const [challenge, setChallenge] = React.useState<Challenge>(INITIAL_CHALLENGE_STATE);
@@ -50,16 +52,13 @@ function App() {
     }
 
     setReward(word.length);
-
-    setTimeout(() => {
-      setValidWords((words) => [...words, word]);
-      wordInputRef.current?.clearWord();
-    }, 200);
+    setUserWords((words) => [...words, word]);
+    wordInputRef.current?.clearWord();
   };
 
   return (
     <div className="flex flex-col items-center">
-      <WordsList words={validWords} centerLetter={challenge.center} />
+      <UserWords centerLetter={challenge.center} />
       <WordInput ref={wordInputRef} letters={challenge.letters} center={challenge.center} />
       <HoneyComb
         letters={challenge.letters}
