@@ -1,31 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useUpdateAtom } from 'jotai/utils';
+
+import { getDailyChallenge } from './api';
+import { challengeAtom } from './atoms/challenge';
 import { HoneyComb } from './components/HoneyComb';
 import { UserActions } from './components/UserActions';
 import { UserPoints } from './components/UserPoints';
-import { useUpdateAtom } from 'jotai/utils';
-import { userWordsAtom } from './atoms/user';
-
-type Challenge = {
-  letters: string;
-  center: string;
-  wordlist: string[];
-};
-
-const INITIAL_CHALLENGE_STATE = {
-  letters: '',
-  center: '',
-  wordlist: [],
-};
+import { UserWords } from './components/UserWords';
+import { WordInput } from './components/WordInput';
+import type { WordInputRefHandler } from './components/WordInput';
 
 function App() {
-  const wordInputRef = React.useRef<WordInputRefHandler>(null);
+  const setChallenge = useUpdateAtom(challengeAtom);
+  const wordInputRef = useRef<WordInputRefHandler>(null);
 
-  const setUserWords = useUpdateAtom(userWordsAtom);
-
-  const [validWords, setValidWords] = React.useState<string[]>([]);
-  const [challenge, setChallenge] = React.useState<Challenge>(INITIAL_CHALLENGE_STATE);
-
-  React.useEffect(() => {
+  useEffect(() => {
     (async function () {
       const challenge = await getDailyChallenge();
       console.log({ challenge });
@@ -33,33 +22,15 @@ function App() {
     })();
   }, []);
 
-  const handleWordSubmit = () => {
-    const word = wordInputRef.current?.getWord() || '';
-
-    if (word.length <= 3) {
-      return setErrorMessage('The word is to short!');
-    }
-    if (validWords.includes(word)) {
-      return setErrorMessage('You already found this word!');
-    }
-    if (!challenge.wordlist.includes(word)) {
-      return setErrorMessage('This word does not exist!');
-    }
-
-    setReward(word.length);
-    setUserWords((words) => [...words, word]);
-    wordInputRef.current?.clearWord();
-  };
+  const handleAddLetter = (l: string) => wordInputRef.current?.addLetter?.(l);
+  const handleDeleteLetter = () => wordInputRef.current?.deleteLetter?.();
+  const handleWordSubmit = () => wordInputRef.current?.validateWord?.();
 
   return (
     <div className="flex flex-col items-center">
-      <UserWords centerLetter={challenge.center} />
-      <WordInput ref={wordInputRef} letters={challenge.letters} center={challenge.center} />
-      <HoneyComb
-        letters={challenge.letters}
-        center={challenge.center}
-        onCellClick={wordInputRef.current?.addLetter!}
-      />
+      <UserWords />
+      <WordInput ref={wordInputRef} />
+      <HoneyComb onCellClick={handleAddLetter} />
       <UserPoints />
       <UserActions onDelete={handleDeleteLetter} onSubmit={handleWordSubmit} />
     </div>

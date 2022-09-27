@@ -2,11 +2,11 @@ import React from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { useAtomValue } from 'jotai';
 import { userWordsAtom } from '../atoms/user';
+import { centerLetterAtom } from '../atoms/challenge';
 
-type Props = { centerLetter: string };
-
-const UserWords: React.FC<Props> = ({ centerLetter }) => {
+const UserWords = () => {
   const userWords = useAtomValue(userWordsAtom);
+  const centerLetter = useAtomValue(centerLetterAtom);
   const [animationParent] = useAutoAnimate<HTMLUListElement>();
   const isCenterLetter = (letter: string) => letter === centerLetter;
 
