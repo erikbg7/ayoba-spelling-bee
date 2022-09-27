@@ -1,36 +1,59 @@
 import React from 'react';
-import { ErrorTooltip } from './ErrorTooltip';
+import { useAtomValue } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { userAtom, userWordsAtom } from '../atoms/user';
+import { centerLetterAtom, wordListAtom } from '../atoms/challenge';
+import { errorMessageAtom, ErrorTooltip } from './ErrorTooltip';
 import { RewardOverlay } from './RewardOverlay';
-
-type Props = {
-  letters: string;
-  center: string;
-};
 
 type WordInputRefHandler = {
   addLetter: (letter: string) => void;
   deleteLetter: () => void;
-  getWord: () => string;
-  clearWord: () => void;
+  validateWord: () => void;
 };
 
-const WordInput = React.forwardRef<WordInputRefHandler, Props>(({ letters, center }, ref) => {
+const WordInput = React.forwardRef<WordInputRefHandler, {}>(({}, ref) => {
+
   const [word, setWord] = React.useState('');
-  const isCenterLetter = (letter: string) => letter === center;
+
+  const setUser = useUpdateAtom(userAtom);
+  const setErrorMessage = useUpdateAtom(errorMessageAtom);
+
+  const userWords = useAtomValue(userWordsAtom);
+  const challengeWords = useAtomValue(wordListAtom);
+  const centerLetter = useAtomValue(centerLetterAtom);
+
+  const isCenterLetter = (letter: string) => letter === centerLetter;
+  const handleWordValidation = () => {
+    let error = '';
+    if (word.length <= 3) error = 'The word is to short!';
+    if (userWords.includes(word)) error = 'You already found this word!';
+    if (!challengeWords.includes(word)) error = 'This word does not exist!';
+
+    if (error) return setErrorMessage(error);
+
+    setWord('');
+    setUser((prevUser) => ({
+      reward: word.length,
+      totalPoints: prevUser.totalPoints + word.length,
+      userWords: [...prevUser.userWords, word],
+    }));
+  };
 
   React.useImperativeHandle(ref, () => ({
     addLetter: (letter: string) => setWord((w) => w + letter),
     deleteLetter: () => setWord((w) => w.slice(0, -1)),
-    clearWord: () => setWord(''),
-    getWord: () => word,
+    validateWord: () => handleWordValidation(),
   }));
 
   return (
     <div className="relative text-center my-4 h-8 w-full">
       <RewardOverlay />
       <div className="relative uppercase text-2xl font-semibold">
-        {word.split('').map((l) => (
-          <span className={isCenterLetter(l) ? 'text-amber-500' : 'text-black'}>{l}</span>
+        {word.split('').map((l, i) => (
+          <span key={i} className={isCenterLetter(l) ? 'text-amber-500' : 'text-black'}>
+            {l}
+          </span>
         ))}
         <span className="absolute bg-amber-500 dummy-caret"></span>
       </div>

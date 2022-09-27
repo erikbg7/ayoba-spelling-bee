@@ -1,9 +1,8 @@
 import React from 'react';
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
+import { rewardAtom } from '../atoms/user';
 
-const rewardAtom = atom(0);
-
-const RewardOverlay = () => {
+const RewardOverlay = React.memo(() => {
   const [reward, setReward] = useAtom(rewardAtom);
 
   React.useEffect(() => {
@@ -19,5 +18,6 @@ const RewardOverlay = () => {
       {!!reward && <span className="text-amber-300 text-6xl font-bold fade-in-out">+{reward}</span>}
     </div>
   );
-};
-export { RewardOverlay, rewardAtom };
+});
+
+export { RewardOverlay };

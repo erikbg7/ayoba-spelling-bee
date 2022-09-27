@@ -3,7 +3,7 @@ import { atom, useAtom } from 'jotai';
 
 const errorMessageAtom = atom('');
 
-const ErrorTooltip = () => {
+const ErrorTooltip = React.memo(() => {
   const [errorMessage, setErrorMessage] = useAtom(errorMessageAtom);
 
   React.useEffect(() => {
@@ -22,6 +22,6 @@ const ErrorTooltip = () => {
       )}
     </div>
   );
-};
+});
 
 export { ErrorTooltip, errorMessageAtom };

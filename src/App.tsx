@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useUpdateAtom } from 'jotai/utils';
-
 import { getDailyChallenge } from './api';
 import { challengeAtom } from './atoms/challenge';
 import { HoneyComb } from './components/HoneyComb';

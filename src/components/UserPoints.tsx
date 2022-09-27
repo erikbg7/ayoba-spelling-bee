@@ -1,10 +1,9 @@
 import React from 'react';
-import { atom, useAtom } from 'jotai';
-
-const userPointsAtom = atom(0);
+import { useAtomValue } from 'jotai';
+import { totalPointsAtom } from '../atoms/user';
 
 const UserPoints = () => {
-  const [userPoints] = useAtom(userPointsAtom);
+  const userPoints = useAtomValue(totalPointsAtom);
 
   return (
     <div>
@@ -13,4 +12,4 @@ const UserPoints = () => {
   );
 };
 
-export { UserPoints, userPointsAtom };
+export { UserPoints };
