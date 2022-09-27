@@ -13,7 +13,6 @@ type WordInputRefHandler = {
 };
 
 const WordInput = React.forwardRef<WordInputRefHandler, {}>(({}, ref) => {
-
   const [word, setWord] = React.useState('');
 
   const setUser = useUpdateAtom(userAtom);
@@ -25,12 +24,9 @@ const WordInput = React.forwardRef<WordInputRefHandler, {}>(({}, ref) => {
 
   const isCenterLetter = (letter: string) => letter === centerLetter;
   const handleWordValidation = () => {
-    let error = '';
-    if (word.length <= 3) error = 'The word is to short!';
-    if (userWords.includes(word)) error = 'You already found this word!';
-    if (!challengeWords.includes(word)) error = 'This word does not exist!';
-
-    if (error) return setErrorMessage(error);
+    if (word.length <= 3) return setErrorMessage('The word is to short!');
+    if (userWords.includes(word)) return setErrorMessage('You already found this word!');
+    if (!challengeWords.includes(word)) return setErrorMessage('This word does not exist!');
 
     setWord('');
     setUser((prevUser) => ({
