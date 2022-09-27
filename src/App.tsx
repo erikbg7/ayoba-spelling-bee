@@ -1,11 +1,6 @@
 import React from 'react';
 import { HoneyComb } from './components/HoneyComb';
-import { getDailyChallenge, getRandomChallenge } from './api';
-import { WordInput, WordInputRefHandler } from './components/WordInput';
-import { UserWords } from './components/UserWords';
-import { useAtom } from 'jotai';
-import { rewardAtom } from './components/RewardOverlay';
-import { errorMessageAtom } from './components/ErrorTooltip';
+import { UserActions } from './components/UserActions';
 import { UserPoints } from './components/UserPoints';
 import { useUpdateAtom } from 'jotai/utils';
 import { userWordsAtom } from './atoms/user';
@@ -65,23 +60,8 @@ function App() {
         center={challenge.center}
         onCellClick={wordInputRef.current?.addLetter!}
       />
-      <div>
-        <span id="user-points">{reward}</span> / 50 points
-      </div>
-      <div className="inline-flex my-6">
-        <button
-          onClick={wordInputRef.current?.deleteLetter!}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-l"
-        >
-          Delete
-        </button>
-        <button
-          onClick={handleWordSubmit}
-          className="bg-amber-300 hover:bg-amber-400 text-gray-800 font-bold py-2 px-6 rounded-r"
-        >
-          Submit
-        </button>
-      </div>
+      <UserPoints />
+      <UserActions onDelete={handleDeleteLetter} onSubmit={handleWordSubmit} />
     </div>
   );
 }
